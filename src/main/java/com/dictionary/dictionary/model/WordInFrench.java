@@ -19,5 +19,5 @@ public class WordInFrench {
     private Long id;
     private String wordInFrench;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<WordInRomanian> wordInRomanians;
+    private List<WordInRomanian> wordsInRomanian;
 }

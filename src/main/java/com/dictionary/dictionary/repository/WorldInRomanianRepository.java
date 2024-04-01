@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TranslationRepository extends CrudRepository<WordInRomanian, Long> {
+public interface WorldInRomanianRepository extends CrudRepository<WordInRomanian, Long> {
     WordInRomanian findFirstByWordInRomanian(String wordInRomanian);
 }
