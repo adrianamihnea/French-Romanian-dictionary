@@ -1,9 +1,9 @@
 package com.dictionary.dictionary;
 
 import com.dictionary.dictionary.model.Role;
-import com.dictionary.dictionary.model.Translation;
+import com.dictionary.dictionary.model.WordInRomanian;
 import com.dictionary.dictionary.model.User;
-import com.dictionary.dictionary.model.Word;
+import com.dictionary.dictionary.model.WordInFrench;
 import com.dictionary.dictionary.repository.RoleRepository;
 import com.dictionary.dictionary.repository.TranslationRepository;
 import com.dictionary.dictionary.repository.UserRepository;
@@ -58,61 +58,61 @@ public class DictionaryApplication {
 			// end of ACTIVE USER
 
 			// create
-			Word word1 = new Word(null, "fenetre", null);
-			Word word2 = new Word(null, "porte", null);
-			Word word3 = new Word(null, "cerveau", null);
-			ArrayList<Word> words = new ArrayList<>();
-			words.add(word1);
-			words.add(word2);
-			words.add(word3);
+			WordInFrench wordInFrench1 = new WordInFrench(null, "fenetre", null);
+			WordInFrench wordInFrench2 = new WordInFrench(null, "porte", null);
+			WordInFrench wordInFrench3 = new WordInFrench(null, "cerveau", null);
+			ArrayList<WordInFrench> wordInFrenches = new ArrayList<>();
+			wordInFrenches.add(wordInFrench1);
+			wordInFrenches.add(wordInFrench2);
+			wordInFrenches.add(wordInFrench3);
 			if(activeUser.getRoles().contains(create)) {
-				wordRepository.saveAll(words);
+				wordRepository.saveAll(wordInFrenches);
 			}
 			else {
 				System.out.println("Create: operation denied for user " + activeUser.getUsername());
 			}
 
-			Translation translation1 = new Translation(null, "fereastra", null);
-			translation1.setWordInFrench(word1);
-			Translation translation2 = new Translation(null, "geam", null);
-			translation2.setWordInFrench(word1);
-			Translation translation3 = new Translation(null, "usa", null);
-			translation3.setWordInFrench(word2);
-			ArrayList<Translation> translations = new ArrayList<>();
-			translations.add(translation1);
-			translations.add(translation2);
-			translations.add(translation3);
-			ArrayList<Translation> translationsForWord1 = new ArrayList<>();
-			translationsForWord1.add(translation1);
-			translationsForWord1.add(translation2);
-			word1.setTranslations(translationsForWord1);
-			word2.setTranslations(Collections.singletonList(translation3));
+			WordInRomanian wordInRomanian1 = new WordInRomanian(null, "fereastra", null);
+			wordInRomanian1.setWordsInFrench(Collections.singletonList(wordInFrench1));
+			WordInRomanian wordInRomanian2 = new WordInRomanian(null, "geam", null);
+			wordInRomanian2.setWordsInFrench(Collections.singletonList(wordInFrench1));
+			WordInRomanian wordInRomanian3 = new WordInRomanian(null, "usa", null);
+			wordInRomanian3.setWordsInFrench(Collections.singletonList(wordInFrench2));
+			ArrayList<WordInRomanian> wordInRomanians = new ArrayList<>();
+			wordInRomanians.add(wordInRomanian1);
+			wordInRomanians.add(wordInRomanian2);
+			wordInRomanians.add(wordInRomanian3);
+			ArrayList<WordInRomanian> translationsForWord1 = new ArrayList<>();
+			translationsForWord1.add(wordInRomanian1);
+			translationsForWord1.add(wordInRomanian2);
+			wordInFrench1.setWordInRomanians(translationsForWord1);
+			wordInFrench2.setWordInRomanians(Collections.singletonList(wordInRomanian3));
 			if(activeUser.getRoles().contains(create)) {
-				translationRepository.saveAll(translations);
-				wordRepository.saveAll(words);
+				translationRepository.saveAll(wordInRomanians);
+				wordRepository.saveAll(wordInFrenches);
 			}
 			else {
 				System.out.println("Create: operation denied for user " + activeUser.getUsername());
 			}
 
 			// retrieve
-			Optional<Translation> translation = translationRepository.findById(word1.getId());
-			System.out.println("Translation for word " + word1.getWordInFrench() + " is " + translation.get().getWordInRomanian());
-			System.out.println("Translation for word " + word1.getWordInFrench() + " is " +
-					word1.getTranslations()
+			Optional<WordInRomanian> translation = translationRepository.findById(wordInFrench1.getId());
+			System.out.println("WordInRomanian for word " + wordInFrench1.getWordInFrench() + " is " + translation.get().getWordInRomanian());
+			System.out.println("WordInRomanian for word " + wordInFrench1.getWordInFrench() + " is " +
+					wordInFrench1.getWordInRomanians()
 					.stream()
-					.map(Translation::getWordInRomanian)
+					.map(WordInRomanian::getWordInRomanian)
 					.collect(Collectors.toList())
 			);
 
 			//update
 			String modifiedString = "fenêtre";
-			Iterable<Word> allWords = wordRepository.findAll();
-			for(Word word : allWords) {
-				if(word.getWordInFrench().equals("fenetre")) {
-					word.setWordInFrench(modifiedString);
+			Iterable<WordInFrench> allWords = wordRepository.findAll();
+			for(WordInFrench wordInFrench : allWords) {
+				if(wordInFrench.getWordInFrench().equals("fenetre")) {
+					wordInFrench.setWordInFrench(modifiedString);
 					if(activeUser.getRoles().contains(update)) {
-						wordRepository.save(word);
+						wordRepository.save(wordInFrench);
 					}
 					else {
 						System.out.println("Update: operation denied for user " + activeUser.getUsername());
@@ -123,10 +123,10 @@ public class DictionaryApplication {
 			// delete
 			String wordToBeDeleted = "cerveau";
 			allWords = wordRepository.findAll();
-			for(Word word : allWords) {
-				if(word.getWordInFrench().equals(wordToBeDeleted)) {
+			for(WordInFrench wordInFrench : allWords) {
+				if(wordInFrench.getWordInFrench().equals(wordToBeDeleted)) {
 					if(activeUser.getRoles().contains(delete)) {
-						wordRepository.delete(word);
+						wordRepository.delete(wordInFrench);
 					}
 					else {
 						System.out.println("Delete: operation denied for user " + activeUser.getUsername());

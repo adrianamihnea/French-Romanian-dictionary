@@ -13,11 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Word {
+public class WordInFrench {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String wordInFrench;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Translation> translations;
+    private List<WordInRomanian> wordInRomanians;
 }
