@@ -1,5 +1,6 @@
 package com.dictionary.dictionary.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class WordInFrench {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String wordInFrench;
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<WordInRomanian> wordInRomanians;
+    @OneToMany(mappedBy = "wordInFrench", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<WordInRomanian> translations;
 }

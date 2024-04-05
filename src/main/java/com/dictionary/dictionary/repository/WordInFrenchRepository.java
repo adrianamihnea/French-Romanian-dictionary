@@ -5,5 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WordRepository extends CrudRepository<WordInFrench, Long> {
+public interface WordInFrenchRepository extends CrudRepository<WordInFrench, Long> {
+
 }
