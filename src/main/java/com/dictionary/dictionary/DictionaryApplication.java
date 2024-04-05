@@ -5,7 +5,7 @@ import com.dictionary.dictionary.model.WordInRomanian;
 import com.dictionary.dictionary.model.User;
 import com.dictionary.dictionary.model.WordInFrench;
 import com.dictionary.dictionary.repository.RoleRepository;
-import com.dictionary.dictionary.repository.WorldInRomanianRepository;
+import com.dictionary.dictionary.repository.WordInRomanianRepository;
 import com.dictionary.dictionary.repository.UserRepository;
 import com.dictionary.dictionary.repository.WordInFrenchRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +24,7 @@ public class DictionaryApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(WordInFrenchRepository wordInFrenchRepository, WorldInRomanianRepository worldInRomanianRepository,
+	CommandLineRunner init(WordInFrenchRepository wordRepository, WordInRomanianRepository translationRepository,
 						   UserRepository userRepository, RoleRepository roleRepository) {
 		return args -> {
 
@@ -54,65 +54,65 @@ public class DictionaryApplication {
 			userRepository.save(user);
 
 			// ACTIVE USER
-			User activeUser = user;
+			User activeUser = admin;
 			// end of ACTIVE USER
 
 			// create
-			WordInFrench wordInFrench1 = new WordInFrench(null, "fenetre", null);
-			WordInFrench wordInFrench2 = new WordInFrench(null, "porte", null);
-			WordInFrench wordInFrench3 = new WordInFrench(null, "cerveau", null);
-			ArrayList<WordInFrench> wordInFrenches = new ArrayList<>();
-			wordInFrenches.add(wordInFrench1);
-			wordInFrenches.add(wordInFrench2);
-			wordInFrenches.add(wordInFrench3);
+			WordInFrench word1 = new WordInFrench(null, "fenetre", null);
+			WordInFrench word2 = new WordInFrench(null, "porte", null);
+			WordInFrench word3 = new WordInFrench(null, "cerveau", null);
+			ArrayList<WordInFrench> words = new ArrayList<>();
+			words.add(word1);
+			words.add(word2);
+			words.add(word3);
 			if(activeUser.getRoles().contains(create)) {
-				wordInFrenchRepository.saveAll(wordInFrenches);
+				wordRepository.saveAll(words);
 			}
 			else {
 				System.out.println("Create: operation denied for user " + activeUser.getUsername());
 			}
 
-			WordInRomanian wordInRomanian1 = new WordInRomanian(null, "fereastra", null);
-			wordInRomanian1.setWordsInFrench(Collections.singletonList(wordInFrench1));
-			WordInRomanian wordInRomanian2 = new WordInRomanian(null, "geam", null);
-			wordInRomanian2.setWordsInFrench(Collections.singletonList(wordInFrench1));
-			WordInRomanian wordInRomanian3 = new WordInRomanian(null, "usa", null);
-			wordInRomanian3.setWordsInFrench(Collections.singletonList(wordInFrench2));
-			ArrayList<WordInRomanian> wordInRomanians = new ArrayList<>();
-			wordInRomanians.add(wordInRomanian1);
-			wordInRomanians.add(wordInRomanian2);
-			wordInRomanians.add(wordInRomanian3);
+			WordInRomanian translation1 = new WordInRomanian(null, "fereastra", null);
+			translation1.setWordInFrench(word1);
+			WordInRomanian translation2 = new WordInRomanian(null, "geam", null);
+			translation2.setWordInFrench(word1);
+			WordInRomanian translation3 = new WordInRomanian(null, "usa", null);
+			translation3.setWordInFrench(word2);
+			ArrayList<WordInRomanian> translations = new ArrayList<>();
+			translations.add(translation1);
+			translations.add(translation2);
+			translations.add(translation3);
 			ArrayList<WordInRomanian> translationsForWord1 = new ArrayList<>();
-			translationsForWord1.add(wordInRomanian1);
-			translationsForWord1.add(wordInRomanian2);
-			wordInFrench1.setWordInRomanians(translationsForWord1);
-			wordInFrench2.setWordInRomanians(Collections.singletonList(wordInRomanian3));
+			translationsForWord1.add(translation1);
+			translationsForWord1.add(translation2);
+			word1.setTranslations(translationsForWord1);
+			word2.setTranslations(Collections.singletonList(translation3));
 			if(activeUser.getRoles().contains(create)) {
-				worldInRomanianRepository.saveAll(wordInRomanians);
-				wordInFrenchRepository.saveAll(wordInFrenches);
+				translationRepository.saveAll(translations);
+				wordRepository.saveAll(words);
 			}
 			else {
 				System.out.println("Create: operation denied for user " + activeUser.getUsername());
 			}
 
 			// retrieve
-			Optional<WordInRomanian> translation = worldInRomanianRepository.findById(wordInFrench1.getId());
-			System.out.println("WordInRomanian for word " + wordInFrench1.getWordInFrench() + " is " + translation.get().getWordInRomanian());
-			System.out.println("WordInRomanian for word " + wordInFrench1.getWordInFrench() + " is " +
-					wordInFrench1.getWordInRomanians()
-					.stream()
-					.map(WordInRomanian::getWordInRomanian)
-					.collect(Collectors.toList())
+			Optional<WordInRomanian> translation = translationRepository.findById(word1.getId());
+			System.out.println("Translation for word " + word1.getWordInFrench() + " is " + translation.get().getWordInRomanian());
+			System.out.println("Translation for word " + word1.getWordInFrench() + " is " +
+					word1.getTranslations()
+							.stream()
+							.map(WordInRomanian::getWordInRomanian)
+							.collect(Collectors.toList())
 			);
 
 			//update
 			String modifiedString = "fenêtre";
-			Iterable<WordInFrench> allWords = wordInFrenchRepository.findAll();
-			for(WordInFrench wordInFrench : allWords) {
-				if(wordInFrench.getWordInFrench().equals("fenetre")) {
-					wordInFrench.setWordInFrench(modifiedString);
+			Iterable<WordInFrench> allWords = wordRepository.findAll();
+			for(WordInFrench word : allWords) {
+				if(word.getWordInFrench().equals("fenetre")) {
+					word.setWordInFrench(modifiedString);
 					if(activeUser.getRoles().contains(update)) {
-						wordInFrenchRepository.save(wordInFrench);
+						wordRepository.save(word);
 					}
 					else {
 						System.out.println("Update: operation denied for user " + activeUser.getUsername());
@@ -122,11 +122,11 @@ public class DictionaryApplication {
 
 			// delete
 			String wordToBeDeleted = "cerveau";
-			allWords = wordInFrenchRepository.findAll();
-			for(WordInFrench wordInFrench : allWords) {
-				if(wordInFrench.getWordInFrench().equals(wordToBeDeleted)) {
+			allWords = wordRepository.findAll();
+			for(WordInFrench word : allWords) {
+				if(word.getWordInFrench().equals(wordToBeDeleted)) {
 					if(activeUser.getRoles().contains(delete)) {
-						wordInFrenchRepository.delete(wordInFrench);
+						wordRepository.delete(word);
 					}
 					else {
 						System.out.println("Delete: operation denied for user " + activeUser.getUsername());
@@ -137,4 +137,3 @@ public class DictionaryApplication {
 
 	}
 }
-

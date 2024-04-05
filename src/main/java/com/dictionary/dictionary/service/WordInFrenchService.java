@@ -15,6 +15,14 @@ public interface WordInFrenchService {
     WordInFrench updateTranslation(Long id, WordInRomanian translation);
 
     List<WordInFrench> findAll();
-    WordInFrench findByID(Long id);
-    WordInFrench deleteWord(Long id);
+    Optional<WordInFrench> findByID(Long id);
+    void deleteWord(Long id);
+
+    WordInFrench addWord(WordInFrench word);
+
+    Optional<WordInFrench> findById(Long id);
+
+    WordInFrench updateWord(Long id, WordInFrench updatedWord);
+
+    List<WordInRomanian> findTranslationsByWordId(Long id);
 }

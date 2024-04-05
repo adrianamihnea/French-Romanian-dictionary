@@ -19,6 +19,7 @@ public class WordInRomanian {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String wordInRomanian;
-    @OneToMany
-    private List<WordInFrench> wordsInFrench;
+    @ManyToOne
+    @JoinColumn(name = "word_in_french_id")
+    private WordInFrench wordInFrench;
 }
