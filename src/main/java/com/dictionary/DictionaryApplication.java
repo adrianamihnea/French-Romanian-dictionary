@@ -1,13 +1,13 @@
-package com.dictionary.dictionary;
+package com.dictionary;
 
-import com.dictionary.dictionary.model.Role;
-import com.dictionary.dictionary.model.WordInRomanian;
-import com.dictionary.dictionary.model.User;
-import com.dictionary.dictionary.model.WordInFrench;
-import com.dictionary.dictionary.repository.RoleRepository;
-import com.dictionary.dictionary.repository.WordInRomanianRepository;
-import com.dictionary.dictionary.repository.UserRepository;
-import com.dictionary.dictionary.repository.WordInFrenchRepository;
+import com.dictionary.model.Role;
+import com.dictionary.model.WordInRomanian;
+import com.dictionary.model.User;
+import com.dictionary.model.WordInFrench;
+import com.dictionary.repository.RoleRepository;
+import com.dictionary.repository.WordInRomanianRepository;
+import com.dictionary.repository.UserRepository;
+import com.dictionary.repository.WordInFrenchRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +25,7 @@ public class DictionaryApplication {
 
 	@Bean
 	CommandLineRunner init(WordInFrenchRepository wordRepository, WordInRomanianRepository translationRepository,
-						   UserRepository userRepository, RoleRepository roleRepository) {
+                           UserRepository userRepository, RoleRepository roleRepository) {
 		return args -> {
 
 			//roles

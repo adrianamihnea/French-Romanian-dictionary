@@ -3,9 +3,34 @@ import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reac
 import { withRouter } from 'react-router-dom';
 
 class Home extends Component {
-    handleLogin = () => {
-        // Redirect to the list of words
-        this.props.history.push('/words');
+    handleLogin = async () => {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                // Login successful, redirect to the list of words
+                this.props.history.push('/words');
+            } else {
+                // Handle login error (e.g., display error message)
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            // Handle error (e.g., display error message)
+        }
+    }
+
+    handleRegister = async () => {
+        // Similar to login, send a POST request to /createUser endpoint with registration data
+        // Handle the response accordingly
     }
 
     render() {
@@ -36,6 +61,14 @@ class Home extends Component {
                                 </FormGroup>
                                 <Button color="primary" onClick={this.handleLogin}>Login</Button>
                             </Form>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={{ size: 6, offset: 3 }}>
+                            <h3>Register</h3>
+                            {/* Registration form */}
+                            {/* Similar to login form, capture input values and handle registration */}
+                            {/* You can implement this part similarly to how the login form is implemented */}
                         </Col>
                     </Row>
                 </Container>

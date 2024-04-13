@@ -1,8 +1,7 @@
-package com.dictionary.dictionary.controller;
+package com.dictionary.controller;
 
-import com.dictionary.dictionary.model.WordInFrench;
-import com.dictionary.dictionary.model.WordInRomanian;
-import com.dictionary.dictionary.service.WordInFrenchService;
+import com.dictionary.model.WordInFrench;
+import com.dictionary.service.WordInFrenchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;

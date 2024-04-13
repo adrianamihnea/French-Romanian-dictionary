@@ -1,6 +1,6 @@
-package com.dictionary.dictionary.service;
+package com.dictionary.service;
 
-import com.dictionary.dictionary.model.WordInRomanian;
+import com.dictionary.model.WordInRomanian;
 
 import java.util.List;
 

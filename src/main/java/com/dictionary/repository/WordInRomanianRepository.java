@@ -1,6 +1,6 @@
-package com.dictionary.dictionary.repository;
+package com.dictionary.repository;
 
-import com.dictionary.dictionary.model.WordInRomanian;
+import com.dictionary.model.WordInRomanian;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
