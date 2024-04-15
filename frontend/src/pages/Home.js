@@ -6,27 +6,34 @@ class Home extends Component {
     handleLogin = async () => {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        
+    
         try {
-            const response = await fetch('/login', {
+            const response = await fetch(`/login?username=${username}&password=${password}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
+                }
             });
-
+    
             if (response.ok) {
-                // Login successful, redirect to the list of words
                 this.props.history.push('/words');
             } else {
-                // Handle login error (e.g., display error message)
+                const errorMessage = await response.text(); // Get error message from response
+                if (errorMessage.includes('User not registered')) {
+                    alert('User not registered'); // Display error message for unregistered user
+                } else if (errorMessage.includes('Invalid credentials')) {
+                    alert('Invalid credentials'); // Display error message for incorrect credentials
+                } else {
+                    alert('Unknown error'); // Display generic error message for other errors
+                }
             }
         } catch (error) {
             console.error('Error logging in:', error);
-            // Handle error (e.g., display error message)
+            alert('Error logging in'); // Display generic error message to user
         }
     }
+    
+     
 
     handleRegister = async () => {
         // Similar to login, send a POST request to /createUser endpoint with registration data

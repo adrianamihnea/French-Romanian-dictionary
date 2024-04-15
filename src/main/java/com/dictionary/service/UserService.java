@@ -1,10 +1,9 @@
 package com.dictionary.service;
 
 import com.dictionary.dto.UserDto;
+import com.dictionary.model.AuthResult;
 import com.dictionary.model.RegistrationRequest;
 import com.dictionary.model.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,6 +13,8 @@ public interface UserService {
     boolean checkEmail(String email);
 
     UserDto registerUser(RegistrationRequest registrationRequest);
+
+    AuthResult authenticate(String username, String password);
 
     UserDto getLoginUser();
 
@@ -26,4 +27,6 @@ public interface UserService {
     UserDto updateUser(User user);
 
     void deleteUser(User user);
+
+    boolean isRegistered(String username);
 }
