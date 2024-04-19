@@ -1,4 +1,4 @@
-package com.dictionary.dictionary.model;
+package com.dictionary.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

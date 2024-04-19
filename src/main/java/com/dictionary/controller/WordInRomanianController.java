@@ -1,8 +1,8 @@
-package com.dictionary.dictionary.controller;
+package com.dictionary.controller;
 
-import com.dictionary.dictionary.model.WordInRomanian;
-import com.dictionary.dictionary.service.WordInFrenchService;
-import com.dictionary.dictionary.service.WordInRomanianService;
+import com.dictionary.model.WordInRomanian;
+import com.dictionary.service.WordInFrenchService;
+import com.dictionary.service.WordInRomanianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

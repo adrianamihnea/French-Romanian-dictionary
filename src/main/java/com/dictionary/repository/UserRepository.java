@@ -1,6 +1,6 @@
-package com.dictionary.dictionary.repository;
+package com.dictionary.repository;
 
-import com.dictionary.dictionary.model.User;
+import com.dictionary.model.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

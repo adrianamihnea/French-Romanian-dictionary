@@ -1,4 +1,4 @@
-package com.dictionary.dictionary.model;
+package com.dictionary.model;
 
 import jakarta.persistence.*;
 import lombok.*;

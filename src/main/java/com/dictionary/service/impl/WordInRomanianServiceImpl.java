@@ -1,14 +1,13 @@
-package com.dictionary.dictionary.service.impl;
+package com.dictionary.service.impl;
 
-import com.dictionary.dictionary.model.WordInRomanian;
-import com.dictionary.dictionary.repository.WordInFrenchRepository;
-import com.dictionary.dictionary.repository.WordInRomanianRepository;
-import com.dictionary.dictionary.service.WordInRomanianService;
+import com.dictionary.model.WordInRomanian;
+import com.dictionary.repository.WordInFrenchRepository;
+import com.dictionary.repository.WordInRomanianRepository;
+import com.dictionary.service.WordInRomanianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WordInRomanianServiceImpl implements WordInRomanianService {

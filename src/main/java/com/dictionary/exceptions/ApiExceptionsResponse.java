@@ -1,4 +1,4 @@
-package com.dictionary.dictionary.exceptions;
+package com.dictionary.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;

@@ -1,11 +1,11 @@
-package com.dictionary.dictionary.service.impl;
+package com.dictionary.service.impl;
 
-import com.dictionary.dictionary.exceptions.ApiExceptionsResponse;
-import com.dictionary.dictionary.model.WordInFrench;
-import com.dictionary.dictionary.model.WordInRomanian;
-import com.dictionary.dictionary.repository.WordInRomanianRepository;
-import com.dictionary.dictionary.service.WordInFrenchService;
-import com.dictionary.dictionary.repository.WordInFrenchRepository;
+import com.dictionary.exceptions.ApiExceptionsResponse;
+import com.dictionary.model.WordInFrench;
+import com.dictionary.model.WordInRomanian;
+import com.dictionary.repository.WordInRomanianRepository;
+import com.dictionary.service.WordInFrenchService;
+import com.dictionary.repository.WordInFrenchRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

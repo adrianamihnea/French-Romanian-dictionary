@@ -1,8 +1,8 @@
-package com.dictionary.dictionary.service;
+package com.dictionary.service;
 
-import com.dictionary.dictionary.exceptions.ApiExceptionsResponse;
-import com.dictionary.dictionary.model.WordInFrench;
-import com.dictionary.dictionary.model.WordInRomanian;
+import com.dictionary.exceptions.ApiExceptionsResponse;
+import com.dictionary.model.WordInFrench;
+import com.dictionary.model.WordInRomanian;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
