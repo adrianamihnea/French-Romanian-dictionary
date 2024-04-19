@@ -50,6 +50,13 @@
 			<artifactId>spring-security-core</artifactId>
 			<version>6.2.3</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.9</version>
+		</dependency>
+
 
 	</dependencies>
 
