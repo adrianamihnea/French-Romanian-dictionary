@@ -24,9 +24,9 @@ public class MySecurityUser extends User {
     private LocalDate birthdate;
 
 
-    public MySecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities, // Update this line
+    public MySecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
                           String firstName, String lastName, String emailAddress, LocalDate birthdate) {
-        super(username, password, authorities); // Pass authorities directly to superclass constructor
+        super(username, password, authorities);
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullname = firstName + " " + lastName;
@@ -34,19 +34,21 @@ public class MySecurityUser extends User {
         this.birthdate = birthdate;
     }
 
-    @Override
-    public String toString() {
-        return "MySecurityUser firstName=" + firstName + ", lastName=" + lastName + ", name=" + fullname + ", emailaddress=" + emailaddress + ", birthdate=" + birthdate
-                + "] " + super.toString();
-    }
-
     public static MySecurityUser fromUserDto(UserDto userDto) {
         List<GrantedAuthority> authorities = userDto.roles().stream()
                 .map(roleDto -> (GrantedAuthority) () -> "ROLE_" + roleDto.role())
                 .collect(Collectors.toList());
 
-        return new MySecurityUser(userDto.username(), null, authorities,
-                userDto.firstName(), userDto.lastName(), userDto.emailAddress(), null); // Pass other user details as needed
+        // Pass placeholder values or empty strings for password and birthdate
+        return new MySecurityUser(userDto.username(), "", authorities,
+                userDto.firstName(), userDto.lastName(), userDto.emailAddress(), LocalDate.now());
+    }
+
+
+    @Override
+    public String toString() {
+        return "MySecurityUser firstName=" + firstName + ", lastName=" + lastName + ", name=" + fullname + ", emailaddress=" + emailaddress + ", birthdate=" + birthdate
+                + "] " + super.toString();
     }
 
 }

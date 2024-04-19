@@ -3,10 +3,18 @@ import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reac
 import { withRouter } from 'react-router-dom';
 
 class Home extends Component {
+    state = {
+        showRegistrationForm: false,
+        registrationData: {
+            username: '',
+            password: ''
+        }
+    };
+
     handleLogin = async () => {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-    
+
         try {
             const response = await fetch(`/login?username=${username}&password=${password}`, {
                 method: 'POST',
@@ -14,7 +22,7 @@ class Home extends Component {
                     'Content-Type': 'application/json'
                 }
             });
-    
+
             if (response.ok) {
                 this.props.history.push('/words');
             } else {
@@ -31,14 +39,49 @@ class Home extends Component {
             console.error('Error logging in:', error);
             alert('Error logging in'); // Display generic error message to user
         }
-    }
-    
-     
+    };
 
     handleRegister = async () => {
-        // Similar to login, send a POST request to /createUser endpoint with registration data
-        // Handle the response accordingly
-    }
+        const { username, password } = this.state.registrationData;
+        try {
+            const response = await fetch('/createUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+    
+            if (response.ok) {
+                alert('Registration successful');
+                // Optionally, you can automatically log in the user after registration
+                // Redirect the user to the login page or automatically log them in
+            } else {
+                const errorMessage = await response.text(); // Get error message from response
+                alert(errorMessage); // Display error message
+            }
+        } catch (error) {
+            console.error('Error registering user:', error);
+            alert('Error registering user'); // Display generic error message to user
+        }
+    };
+    
+
+    toggleRegistrationForm = () => {
+        this.setState(prevState => ({
+            showRegistrationForm: !prevState.showRegistrationForm
+        }));
+    };
+
+    handleInputChange = e => {
+        const { name, value } = e.target;
+        this.setState(prevState => ({
+            registrationData: {
+                ...prevState.registrationData,
+                [name]: value
+            }
+        }));
+    };
 
     render() {
         return (
@@ -73,9 +116,21 @@ class Home extends Component {
                     <Row>
                         <Col md={{ size: 6, offset: 3 }}>
                             <h3>Register</h3>
-                            {/* Registration form */}
-                            {/* Similar to login form, capture input values and handle registration */}
-                            {/* You can implement this part similarly to how the login form is implemented */}
+                            <Button color="info" onClick={this.toggleRegistrationForm}>Register</Button>
+                            {/* Conditionally render the registration form based on state */}
+                            {this.state.showRegistrationForm && (
+                                <Form>
+                                    <FormGroup>
+                                        <Label for="regUsername">Username</Label>
+                                        <Input type="text" name="username" id="regUsername" placeholder="Enter your username" onChange={this.handleInputChange} />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="regPassword">Password</Label>
+                                        <Input type="password" name="password" id="regPassword" placeholder="Enter your password" onChange={this.handleInputChange} />
+                                    </FormGroup>
+                                    <Button color="success" onClick={this.handleRegister}>Register</Button>
+                                </Form>
+                            )}
                         </Col>
                     </Row>
                 </Container>

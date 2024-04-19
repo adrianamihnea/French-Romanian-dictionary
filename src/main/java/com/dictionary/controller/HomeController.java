@@ -55,9 +55,6 @@ public class HomeController {
         }
     }
 
-
-
-
     @GetMapping("/login-error")
     public String loginError(Model model){
         model.addAttribute("title", "Login");
@@ -76,13 +73,14 @@ public class HomeController {
     }
 
     @PostMapping("/createUser")
-    public String createUser(@ModelAttribute("user") RegistrationRequest registrationRequest, RedirectAttributes redirectAttributes){
-
-        UserDto userDto = userService.registerUser(registrationRequest);
-
-        redirectAttributes.addAttribute("registrationSuccess", "Success");
-
-        return "redirect:/register";
+    public ResponseEntity<String> createUser(@RequestBody RegistrationRequest registrationRequest) {
+        try {
+            UserDto userDto = userService.registerUser(registrationRequest);
+            return ResponseEntity.ok("User created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user: " + e.getMessage());
+        }
     }
+
 
 }
