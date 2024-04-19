@@ -8,16 +8,15 @@ import com.dictionary.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class HomeController {
 
@@ -34,25 +33,25 @@ public class HomeController {
         return "login";
     }
 
-//    @GetMapping("/login")
-//    public String login(Model model){
-//        model.addAttribute("title", "Login");
-//
-//        return "login";
-//    }
+    @GetMapping("/login")
+    public String login(Model model){
+        model.addAttribute("title", "Login");
+
+        return "login";
+    }
 
     @PostMapping("/login")
-    public String doLogin(@RequestParam String username, @RequestParam String password, HttpSession session) {
+    public ResponseEntity<?> doLogin(@RequestParam String username, @RequestParam String password, HttpSession session) {
         AuthResult authResult = userService.authenticate(username, password);
         if (authResult == AuthResult.SUCCESS) {
             session.setAttribute("username", username);
-            return "redirect:/words";
+            return ResponseEntity.ok().build(); // Return 200 OK for successful login
         } else if (authResult == AuthResult.BAD_CREDENTIALS) {
-            return "redirect:/login-error?message=Invalid credentials"; // Redirect with error message
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         } else if (authResult == AuthResult.UNREGISTERED_USER) {
-            return "redirect:/login-error?message=User not registered"; // Redirect with error message
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not registered");
         } else {
-            return "redirect:/login-error?message=Unknown error"; // Redirect with error message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error");
         }
     }
 
