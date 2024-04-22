@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
+import WordOfTheDayPopup from './WordOfTheDay'; // Import the WordOfTheDayPopup component
 
 class WordList extends Component {
-
     constructor(props) {
         super(props);
-        this.state = { words: [] };
+        this.state = {
+            words: [],
+            showWordOfTheDayPopup: true, // Initially set to true to display the popup
+            wordOfTheDay: 'Example word', // Set the word of the day here
+        };
         this.remove = this.remove.bind(this);
+        this.hideWordOfTheDayPopup = this.hideWordOfTheDayPopup.bind(this);
     }
 
     componentDidMount() {
@@ -38,8 +43,12 @@ class WordList extends Component {
         this.props.history.push(`/words/${id}/translations`); // Navigate to translations route
     }
 
+    hideWordOfTheDayPopup() {
+        this.setState({ showWordOfTheDayPopup: false });
+    }
+
     render() {
-        const { words } = this.state;
+        const { words, showWordOfTheDayPopup, wordOfTheDay } = this.state;
 
         const wordList = words.map(word => {
             return <tr key={word.id}>
@@ -58,6 +67,7 @@ class WordList extends Component {
             <div>
                 <AppNavbar />
                 <Container fluid>
+                    {showWordOfTheDayPopup && <WordOfTheDayPopup word={wordOfTheDay} />}
                     <div className="float-right">
                         <Button color="success" tag={Link} to="/words/new">Add Word</Button>
                     </div>

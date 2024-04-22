@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class WordInFrenchServiceImpl implements WordInFrenchService {
@@ -108,6 +109,28 @@ public class WordInFrenchServiceImpl implements WordInFrenchService {
             return wordInFrench.getTranslations();
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Word not found with id: " + id);
+        }
+    }
+
+    @Override
+    public String selectRandomWord() {
+        // Retrieve all words from the French dictionary
+        Iterable<WordInFrench> words = wordInFrenchRepository.findAll();
+
+        /// Convert Iterable to a list for easier manipulation
+        List<WordInFrench> wordList = (List<WordInFrench>) words;
+
+        // Check if the list of words is not empty
+        if (!wordList.isEmpty()) {
+            // Generate a random index to select a word from the list
+            Random random = new Random();
+            int randomIndex = random.nextInt(wordList.size());
+
+            // Return the randomly selected word
+            return wordList.get(randomIndex).getWordInFrench();
+        } else {
+            // If the list is empty, return a default word or handle the situation accordingly
+            return "No words found in the dictionary";
         }
     }
 }
