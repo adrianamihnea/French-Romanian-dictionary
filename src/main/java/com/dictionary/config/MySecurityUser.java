@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,14 +36,13 @@ public class MySecurityUser extends User {
     }
 
     public static MySecurityUser fromUserDto(UserDto userDto) {
-        List<GrantedAuthority> authorities = userDto.roles().stream()
-                .map(roleDto -> (GrantedAuthority) () -> "ROLE_" + roleDto.role())
-                .collect(Collectors.toList());
+        // Assign USER role to all new users
+        List<GrantedAuthority> authorities = Collections.singletonList((GrantedAuthority) () -> "ROLE_USER");
 
-        // Pass placeholder values or empty strings for password and birthdate
         return new MySecurityUser(userDto.username(), "", authorities,
                 userDto.firstName(), userDto.lastName(), userDto.emailAddress(), LocalDate.now());
     }
+
 
 
     @Override
