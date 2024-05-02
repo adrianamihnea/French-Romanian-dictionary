@@ -4,24 +4,31 @@ import '../styles/WordOfTheDayPopup.css'; // Import the CSS file for styling
 const WordOfTheDayPopup = () => {
   const [word, setWord] = useState('');
   const [showPopup, setShowPopup] = useState(true); // State to control visibility of the popup
+  const [ws, setWs] = useState(null);
 
   useEffect(() => {
-    fetchRandomWord();
-  }, []);
-
-  const fetchRandomWord = async () => {
-    try {
-      const response = await fetch('/words/randomWord'); // Assuming your backend endpoint is /randomWord
-      if (response.ok) {
-        const word = await response.text(); // Read the response as text
-        setWord(word); // Set the word directly
-      } else {
-        console.error('Failed to fetch random word');
+    const socket = new WebSocket('ws://localhost:8080');
+    setWs(socket);
+  
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+      // Send a message to request a random word
+      socket.send(JSON.stringify({ type: 'randomWordRequest' }));
+    };
+  
+    socket.onmessage = (event) => {
+      const receivedData = event.data;
+      setWord(receivedData); // Set the received data directly as text
+    };
+    
+  
+    return () => {
+      if (ws) {
+        ws.close();
       }
-    } catch (error) {
-      console.error('Error fetching random word:', error);
-    }
-  };
+    };
+  }, []);
+  
 
   const closePopup = () => {
     setShowPopup(false);
