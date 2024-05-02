@@ -1,7 +1,6 @@
 package com.dictionary.controller;
 
 import com.dictionary.model.WordInFrench;
-import com.dictionary.service.WebSocketService;
 import com.dictionary.service.WordInFrenchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -18,8 +17,6 @@ public class WordInFrenchController {
 
     @Autowired
     private WordInFrenchService wordInFrenchService;
-    @Autowired
-    private WebSocketService webSocketService; // Inject WebSocketService
 
     // Get all words
     @GetMapping
@@ -54,13 +51,9 @@ public class WordInFrenchController {
         return ResponseEntity.ok().cacheControl(CacheControl.noCache()).build();
     }
 
-    // Get the word of the day
-    @GetMapping("/")
-    public String getWordOfTheDay() {
-        // Implement logic to get the word of the day
-        String wordOfTheDay = wordInFrenchService.selectRandomWord(); // Example logic
-        // Broadcast the word of the day via WebSocket
-        webSocketService.broadcastWordOfTheDay(wordOfTheDay);
-        return wordOfTheDay;
+    // Get a random word
+    @GetMapping("/randomWord")
+    public String getRandomWord() {
+        return wordInFrenchService.selectRandomWord();
     }
 }
