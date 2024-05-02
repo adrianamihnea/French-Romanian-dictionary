@@ -25,4 +25,6 @@ public interface WordInFrenchService {
     WordInFrench updateWord(Long id, WordInFrench updatedWord);
 
     List<WordInRomanian> findTranslationsByWordId(Long id);
+
+    String selectRandomWord();
 }

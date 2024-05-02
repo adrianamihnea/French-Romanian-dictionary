@@ -51,8 +51,9 @@ public class WordInFrenchController {
         return ResponseEntity.ok().cacheControl(CacheControl.noCache()).build();
     }
 
-//    @GetMapping("/{id}/translations")
-//    public List<WordInRomanian> getTranslations(@PathVariable Long id) {
-//        return wordInFrenchService.findTranslationsByWordId(id);
-//    }
+    // Get a random word
+    @GetMapping("/randomWord")
+    public String getRandomWord() {
+        return wordInFrenchService.selectRandomWord();
+    }
 }
