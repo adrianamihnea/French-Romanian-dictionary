@@ -72,6 +72,17 @@ public class HomeController {
         return "register";
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        try {
+            userService.logout();
+
+            return ResponseEntity.ok("Logout successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to logout: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/createUser")
     public ResponseEntity<String> createUser(@RequestBody RegistrationRequest registrationRequest) {
         try {
