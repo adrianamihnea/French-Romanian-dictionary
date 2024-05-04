@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.userEntityToDto(userRepository.save(user));
     }
 
+    @Transactional
     @Override
     public AuthResult authenticate(String username, String password) {
         Optional<User> optionalUser = userRepository.findByUsername(username);

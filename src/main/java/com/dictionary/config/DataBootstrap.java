@@ -43,8 +43,8 @@ public class DataBootstrap implements CommandLineRunner {
         Role userRole = roleRepository.save(new Role(null, "USER"));
 
         // Initialize users
-        User adminUser = new User(null, "admin", "admin123", Collections.singletonList(adminRole), null, null, null, null, null, null, null, null);
-        User normalUser = new User(null, "user", "user123", Collections.singletonList(userRole), null, null, null, null, null, null, null, null);
+        User adminUser = new User(null, "admin", "admin123", false, Collections.singletonList(adminRole), null, null, null, null, null, null, null, null);
+        User normalUser = new User(null, "user", "user123", false, Collections.singletonList(userRole), null, null, null, null, null, null, null, null);
         userRepository.saveAll(List.of(adminUser, normalUser));
 
         // Initialize words and translations from CSV

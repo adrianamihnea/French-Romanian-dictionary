@@ -26,6 +26,9 @@ public class User {
     @NonNull
     private String password;
 
+    @Builder.Default
+    private Boolean loggedIn = false;
+
     @Singular
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinTable(name = "users_roles",
