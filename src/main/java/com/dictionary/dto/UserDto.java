@@ -9,4 +9,6 @@ public record UserDto(
         List<RoleDto> roles,
         String firstName,
         String lastName,
-        String emailAddress) {}
+        String emailAddress,
+        Boolean loggedIn) {
+}

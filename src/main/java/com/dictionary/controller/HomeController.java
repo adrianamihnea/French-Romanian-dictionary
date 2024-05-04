@@ -4,6 +4,7 @@ import com.dictionary.dto.UserDto;
 import com.dictionary.model.AuthResult;
 import com.dictionary.model.RegistrationRequest;
 import com.dictionary.model.User;
+import com.dictionary.model.UserInfo;
 import com.dictionary.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -93,5 +97,12 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/users")
+    public List<UserInfo> getUsersInfo() {
+        List<User> users = userService.getAllUsers();
+        return users.stream()
+                .map(user -> new UserInfo(user.getUsername(), user.getLoggedIn()))
+                .collect(Collectors.toList());
+    }
 
 }

@@ -11,7 +11,6 @@ import com.dictionary.repository.UserRepository;
 import com.dictionary.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +59,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.save(user);
 
                 loggedInUser = user;
+
 
                 return AuthResult.SUCCESS; // Authentication successful
             } else {
@@ -118,8 +118,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userMapper.userListEntityToDto(userRepository.findAll());
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
