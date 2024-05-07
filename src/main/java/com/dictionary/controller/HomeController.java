@@ -4,6 +4,7 @@ import com.dictionary.dto.UserDto;
 import com.dictionary.model.AuthResult;
 import com.dictionary.model.RegistrationRequest;
 import com.dictionary.model.User;
+import com.dictionary.model.UserInfo;
 import com.dictionary.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,6 +76,17 @@ public class HomeController {
         return "register";
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        try {
+            userService.logout();
+
+            return ResponseEntity.ok("Logout successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to logout: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/createUser")
     public ResponseEntity<String> createUser(@RequestBody RegistrationRequest registrationRequest) {
         try {
@@ -82,5 +97,25 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/users")
+    public List<UserInfo> getUsersInfo() {
+        List<User> users = userService.getAllUsers();
+        return users.stream()
+                .map(user -> new UserInfo(user.getUsername(), user.getLoggedIn()))
+                .collect(Collectors.toList());
+    }
+
+    // Endpoint to get user type by username
+    @GetMapping("/user-type")
+    public ResponseEntity<String> getUserTypeByUsername() {
+        UserDto userDto = userService.getLoginUser();
+        String username = userDto.username();
+        String userType = userService.getUserTypeByUsername(username);
+        if (userType != null) {
+            return ResponseEntity.ok(userType);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
 
 }

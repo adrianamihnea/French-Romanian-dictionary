@@ -9,6 +9,7 @@ import com.dictionary.model.RegistrationRequest;
 import com.dictionary.model.User;
 import com.dictionary.repository.UserRepository;
 import com.dictionary.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private User loggedInUser;
 
     @Override
     public boolean checkEmail(String email) {
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.userEntityToDto(userRepository.save(user));
     }
 
+    @Transactional
     @Override
     public AuthResult authenticate(String username, String password) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
@@ -52,6 +55,12 @@ public class UserServiceImpl implements UserService {
                 // Update the security context with the authenticated authentication object
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
+                user.setLoggedIn(true);
+                userRepository.save(user);
+
+                loggedInUser = user;
+
+
                 return AuthResult.SUCCESS; // Authentication successful
             } else {
                 return AuthResult.BAD_CREDENTIALS; // Incorrect password
@@ -61,23 +70,56 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-
+    @Transactional
     @Override
-    public UserDto getLoginUser() {
-        // Implement logic to get the currently logged-in user
-        // This might involve using Spring Security's Authentication object or similar mechanisms
-        return null;
+    public void logout() {
+        // Get the currently logged-in user
+        UserDto loggedInUser = getLoginUser();
+        if (loggedInUser != null) {
+            // Find the user in the database
+            Optional<User> optionalUser = userRepository.findByUsername(loggedInUser.username());
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+
+                // Update the loggedIn status to false
+                user.setLoggedIn(false);
+                userRepository.save(user);
+
+                // Clear the authentication from the security context
+                SecurityContextHolder.clearContext();
+
+                // Optionally, you can also invalidate the user's session if your application uses sessions
+                // session.invalidate();
+            }
+        }
     }
 
+
+    @Transactional
+    @Override
+    public UserDto getLoginUser() {
+        User myUser = loggedInUser;
+        if(myUser != null) {
+            // Create a UserDto object from User
+            return UserDto.builder()
+                    .username(myUser.getUsername())
+                    .firstName(myUser.getFirstName())
+                    .lastName(myUser.getLastName())
+                    .emailAddress(null)
+                    .build();
+        }
+
+        // No user authenticated or authentication is not of expected type
+        return null;
+    }
     @Override
     public UserDto getUserById(Integer id) {
         return userMapper.userEntityToDto(userRepository.findById(id).orElse(null));
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userMapper.userListEntityToDto(userRepository.findAll());
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
@@ -98,6 +140,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isRegistered(String username) {
         return userRepository.findByUsername(username).isPresent();
+    }
+
+    @Override
+    // Method to get user type by username
+    public String getUserTypeByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        return userOptional.map(user -> user.getRoles().get(0).getRole()).orElse(null);
     }
 
 

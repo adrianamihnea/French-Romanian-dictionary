@@ -4,6 +4,7 @@ import com.dictionary.dto.UserDto;
 import com.dictionary.model.AuthResult;
 import com.dictionary.model.RegistrationRequest;
 import com.dictionary.model.User;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -16,11 +17,15 @@ public interface UserService {
 
     AuthResult authenticate(String username, String password);
 
+
+    @Transactional
+    void logout();
+
     UserDto getLoginUser();
 
     UserDto getUserById(Integer id);
 
-    List<UserDto> getAllUsers();
+    List<User> getAllUsers();
 
     UserDto createUser(User user);
 
@@ -29,4 +34,6 @@ public interface UserService {
     void deleteUser(User user);
 
     boolean isRegistered(String username);
+
+    String getUserTypeByUsername(String username);
 }
