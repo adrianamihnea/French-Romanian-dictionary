@@ -142,5 +142,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).isPresent();
     }
 
+    @Override
+    // Method to get user type by username
+    public String getUserTypeByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        return userOptional.map(user -> user.getRoles().get(0).getRole()).orElse(null);
+    }
+
 
 }

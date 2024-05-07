@@ -105,4 +105,17 @@ public class HomeController {
                 .collect(Collectors.toList());
     }
 
+    // Endpoint to get user type by username
+    @GetMapping("/user-type")
+    public ResponseEntity<String> getUserTypeByUsername() {
+        UserDto userDto = userService.getLoginUser();
+        String username = userDto.username();
+        String userType = userService.getUserTypeByUsername(username);
+        if (userType != null) {
+            return ResponseEntity.ok(userType);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
 }

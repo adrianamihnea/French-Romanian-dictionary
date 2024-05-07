@@ -3,6 +3,7 @@ import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import WordOfTheDayPopup from './WordOfTheDay'; // Import the WordOfTheDayPopup component
+import axios from 'axios';
 
 class WordList extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class WordList extends Component {
             words: [],
             showWordOfTheDayPopup: true, // Initially set to true to display the popup
             wordOfTheDay: 'Example word', // Set the word of the day here
+            userType: null // Initialize userType state
         };
         this.remove = this.remove.bind(this);
         this.hideWordOfTheDayPopup = this.hideWordOfTheDayPopup.bind(this);
@@ -18,6 +20,7 @@ class WordList extends Component {
 
     componentDidMount() {
         this.loadWords();
+        this.fetchUserType();
     }
 
     async loadWords() {
@@ -39,6 +42,15 @@ class WordList extends Component {
         });
     }
 
+    async fetchUserType() {
+        try {
+            const response = await axios.get('/user-type');
+            this.setState({ userType: response.data });
+        } catch (error) {
+            console.error('Error fetching user type:', error);
+        }
+    }
+
     getTranslations(id) {
         this.props.history.push(`/words/${id}/translations`); // Navigate to translations route
     }
@@ -48,39 +60,45 @@ class WordList extends Component {
     }
 
     render() {
-        const { words, showWordOfTheDayPopup, wordOfTheDay } = this.state;
-
-        const wordList = words.map(word => {
-            return <tr key={word.id}>
-                <td style={{ whiteSpace: 'nowrap' }}>{word.wordInFrench}</td>
-                <td>
-                    <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/words/" + word.id}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => this.remove(word.id)}>Delete</Button>
-                        <Button size="sm" color="primary" tag={Link} to={`/words/${word.id}/translations`}>Get Translations</Button>
-                    </ButtonGroup>
-                </td>
-            </tr>
-        });
+        const { words, showWordOfTheDayPopup, wordOfTheDay, userType } = this.state;
 
         return (
             <div>
                 <AppNavbar />
                 <Container fluid>
                     {showWordOfTheDayPopup && <WordOfTheDayPopup word={wordOfTheDay} />}
-                    <div className="float-right">
-                        <Button color="success" tag={Link} to="/words/new">Add Word</Button>
-                    </div>
+                    {userType === 'ADMIN' && (
+                        <div className="float-right">
+                            <Button color="success" tag={Link} to="/words/new">Add Word</Button>
+                        </div>
+                    )}
                     <h3>Words</h3>
                     <Table className="mt-4">
                         <thead>
                             <tr>
                                 <th width="30%">Word</th>
+                                {userType === 'admin' && <th width="20%">Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
-                            {wordList}
+                            {words.map(word => (
+                                <tr key={word.id}>
+                                    <td style={{ whiteSpace: 'nowrap' }}>{word.wordInFrench}</td>
+                                    {(userType === 'ADMIN' || userType === 'USER') && ( // Adjusted condition here
+                                        <td>
+                                        <Button size="sm" color="primary" tag={Link} to={`/words/${word.id}/translations`}>Get Translations</Button>
+                                        {userType === 'ADMIN' && ( // Additional condition for delete button
+                                                <ButtonGroup>
+                                                <Button size="sm" color="primary" tag={Link} to={"/words/" + word.id}>Edit</Button>
+                                                <Button size="sm" color="danger" onClick={() => this.remove(word.id)}>Delete</Button>
+                                            </ButtonGroup>
+                                        )}
+                                        </td>
+                                    )}
+                                </tr>
+                            ))}
                         </tbody>
+
                     </Table>
                 </Container>
             </div>

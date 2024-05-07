@@ -34,4 +34,6 @@ public interface UserService {
     void deleteUser(User user);
 
     boolean isRegistered(String username);
+
+    String getUserTypeByUsername(String username);
 }
