@@ -10,6 +10,7 @@ import com.dictionary.repository.WordInFrenchRepository;
 import com.dictionary.repository.WordInRomanianRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.opencsv.CSVReader;
 
@@ -25,15 +26,19 @@ public class DataBootstrap implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final WordInFrenchRepository wordInFrenchRepository;
     private final WordInRomanianRepository wordInRomanianRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
 
     @Autowired
     public DataBootstrap(UserRepository userRepository, RoleRepository roleRepository,
                          WordInFrenchRepository wordInFrenchRepository,
-                         WordInRomanianRepository wordInRomanianRepository) {
+                         WordInRomanianRepository wordInRomanianRepository,
+                         BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.wordInFrenchRepository = wordInFrenchRepository;
         this.wordInRomanianRepository = wordInRomanianRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,14 +47,35 @@ public class DataBootstrap implements CommandLineRunner {
         Role adminRole = roleRepository.save(new Role(null, "ADMIN"));
         Role userRole = roleRepository.save(new Role(null, "USER"));
 
-        // Initialize users
-        User adminUser = new User(null, "admin", "admin123", false, Collections.singletonList(adminRole), null, null, null, null, null, null, null, null);
-        User normalUser = new User(null, "user", "user123", false, Collections.singletonList(userRole), null, null, null, null, null, null, null, null);
+        // Initialize users with hashed passwords
+        User adminUser = User.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("admin123"))
+                .role(adminRole)
+                .loggedIn(false)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
+                .build();
+
+        User normalUser = User.builder()
+                .username("user")
+                .password(passwordEncoder.encode("user123"))
+                .role(userRole)
+                .loggedIn(false)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
+                .build();
+
         userRepository.saveAll(List.of(adminUser, normalUser));
 
         // Initialize words and translations from CSV
         initializeWordsFromCSV();
     }
+
 
     private void initializeWordsFromCSV() {
         String csvFile = Paths.get("C:", "GitHub", "French-romanian dictionary", "french_to_romanian.csv").toString();

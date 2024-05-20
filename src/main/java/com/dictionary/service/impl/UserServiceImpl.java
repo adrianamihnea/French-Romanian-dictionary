@@ -12,6 +12,7 @@ import com.dictionary.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,8 +33,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto registerUser(RegistrationRequest registrationRequest) {
-        User user = userMapper.registrationRequestToUser(registrationRequest);
-        return userMapper.userEntityToDto(userRepository.save(user));
+        // Check if the username already exists
+        if (userRepository.existsByUsername(registrationRequest.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        // Hash the password
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(registrationRequest.getPassword());
+
+        // Create a new User entity with the hashed password
+        User user = new User();
+        user.setUsername(registrationRequest.getUsername());
+        user.setPassword(hashedPassword);
+        // Set other user properties as needed
+        user.setFirstName(registrationRequest.getFirstName());
+        user.setLastName(registrationRequest.getLastName());
+        user.setEmailAddress(registrationRequest.getEmailAddress());
+
+        // Save the user to the database
+        User savedUser = userRepository.save(user);
+
+        // Map the saved user entity to UserDto and return
+        return userMapper.userEntityToDto(savedUser);
     }
 
     @Transactional
@@ -42,7 +64,10 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (user.getPassword().equals(password)) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                // Passwords match, authentication successful
+
                 // Convert User entity to UserDto
                 UserDto userDto = userMapper.userEntityToDto(user);
 
