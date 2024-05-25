@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WordInFrenchRepository extends CrudRepository<WordInFrench, Long> {
-
+    Iterable<WordInFrench> findAll();
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 class AppNavbar extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class AppNavbar extends Component {
         };
         this.toggleModal = this.toggleModal.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.exportDictionaryToXml = this.exportDictionaryToXml.bind(this); // Bind the new method
     }
 
     componentDidMount() {
@@ -36,24 +38,39 @@ class AppNavbar extends Component {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            if (response.ok) {
-                console.log('Logout successful');
-                this.props.history.push('/');
-            } else {
-                console.error('Logout failed');
-                // Handle logout failure
-            }
-        })
-        .catch(error => {
-            console.error('Error during logout:', error);
-        });
+            .then(response => {
+                if (response.ok) {
+                    console.log('Logout successful');
+                    this.props.history.push('/');
+                } else {
+                    console.error('Logout failed');
+                    // Handle logout failure
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+            });
     }
 
     toggleModal() {
         this.setState(prevState => ({
             modalOpen: !prevState.modalOpen
         }));
+    }
+
+    async exportDictionaryToXml() {
+        try {
+            const response = await axios.get('/export/xml', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/xml' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dictionary.xml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Error exporting dictionary:', error);
+        }
     }
 
     render() {
@@ -68,6 +85,9 @@ class AppNavbar extends Component {
                     </NavItem>
                     <NavItem>
                         <NavLink tag={Link} to="/words">Words</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <Button color="primary" onClick={this.exportDictionaryToXml}>Export to XML</Button>
                     </NavItem>
                     <NavItem>
                         <Button color="danger" onClick={this.handleLogout}>Logout</Button>
